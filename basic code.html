@@ -1,0 +1,157 @@
+	<!DOCTYPE html>
+<html>
+<head>
+    <title>Mental Math</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#practice">Practice</a></li>
+            <li><a href="#leaderboard">Leaderboard</a></li>
+            <li><a href="#lessons">Lessons</a></li>
+            <li><a href="#exercises">Exercises</a></li>
+            <li><a href="#results">Results</a></li>
+            <li><a href="#progress">Progress</a></li>
+        </ul>
+    </nav>
+
+    <!-- Content of each tab -->
+    <div id="practice" class="tab">
+        <h2>Practice</h2>
+        <!-- Content of "Practice" tab -->
+    </div>
+
+    <div id="leaderboard" class="tab">
+        <h2>Leaderboard</h2>
+        <!-- Content of "Leaderboard" tab -->
+        <div class="leaderboard-section">
+            <h3>Leaderboard based on time spent on the site:</h3>
+            <ol id="timeLeaderboard"></ol>
+        </div>
+        <div class="leaderboard-section">
+            <h3>Leaderboard based on points:</h3>
+            <ol id="pointsLeaderboard"></ol>
+        </div>
+    </div>
+
+    <div id="lessons" class="tab">
+        <h2>Lessons</h2>
+        <!-- Content of "Lessons" tab -->
+    </div>
+
+    <div id="exercises" class="tab">
+        <h2>Exercises</h2>
+        <div class="exercise-section">
+            <h3>Addition, Subtraction, or Multiplication:</h3>
+            <button onclick="generateNewCalculation('+')">Addition</button>
+            <button onclick="generateNewCalculation('-')">Subtraction</button>
+            <button onclick="generateNewCalculation('*')">Multiplication</button>
+            <p id="calculationResult" class="result"></p>
+            <input type="text" id="response" class="answer" />
+            <button class="check-answer">Check</button>
+            <div class="speed"></div>
+        </div>
+    </div>
+
+    <div id="results" class="tab">
+        <h2>Results</h2>
+        <!-- Content of "Results" tab -->
+    </div>
+
+    <div id="progress" class="tab">
+        <h2>Progress</h2>
+        <!-- Content of "Progress" tab -->
+    </div>
+
+    <script>
+        var score = 0;
+        var responseTimes = {
+          addition: []
+        };
+
+        // Function to generate a new calculation
+        function generateNewCalculation(operation) {
+            var operand1 = Math.floor(Math.random() * 100); // Operand 1 between 0 and 99
+            var operand2 = Math.floor(Math.random() * 100); // Operand 2 between 0 and 99
+            var result;
+
+            if (operation === '+') {
+                result = operand1 + operand2;
+            } else if (operation === '-') {
+                result = operand1 - operand2;
+            } else if (operation === '*') {
+                result = operand1 * operand2;
+            }
+
+            var calculationText = operand1 + ' ' + operation + ' ' + operand2 + ' = ';
+            document.getElementById('calculationResult').innerHTML = calculationText;
+
+            var checkButton = document.querySelector('.check-answer');
+            checkButton.dataset.expectedResult = result;
+            checkButton.dataset.startTime = Date.now(); // Record the start time
+            checkButton.addEventListener('click', checkAnswer);
+        }
+
+        // Function to check the answer
+        function checkAnswer() {
+            var responseTime = Date.now() - parseInt(this.dataset.startTime); // Calculate the response time
+            var answer = parseInt(document.getElementById('response').value);
+            var expectedResult = parseInt(this.dataset.expectedResult);
+            var speedElement = document.querySelector('.speed');
+
+            if (answer === expectedResult) {
+                score++;
+                document.getElementById('score').innerHTML = 'Score: ' + score;
+                showNotification('Correct answer!', 'success');
+            } else {
+                showNotification('Wrong answer. The correct answer is ' + expectedResult, 'error');
+            }
+
+            speedElement.innerHTML = 'Response time: ' + responseTime + 'ms';
+        }
+
+        // Function to display a notification
+        function showNotification(message, type) {
+            var notification = document.createElement('div');
+            notification.classList.add('notification', type);
+            notification.innerHTML = message;
+
+            document.body.appendChild(notification);
+
+            setTimeout(function() {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Initialize the time leaderboard
+        function initTimeLeaderboard() {
+          var timeLeaderboardElement = document.getElementById('timeLeaderboard');
+          timeLeaderboardElement.innerHTML = '';
+
+          for (var i = 0; i < responseTimes.addition.length; i++) {
+              var li = document.createElement('li');
+              li.innerHTML = 'Time ' + (i + 1) + ': ' + responseTimes.addition[i] + 'ms';
+              timeLeaderboardElement.appendChild(li);
+          }
+        }
+
+        // Initialize the points leaderboard
+        function initPointsLeaderboard() {
+          var pointsLeaderboardElement = document.getElementById('pointsLeaderboard');
+          pointsLeaderboardElement.innerHTML = '';
+
+          for (var i = 0; i < pointsLeaderboard.length; i++) {
+              var li = document.createElement('li');
+              li.innerHTML = 'Points ' + (i + 1) + ': ' + pointsLeaderboard[i];
+              pointsLeaderboardElement.appendChild(li);
+          }
+        }
+
+        // Initialize the leaderboards
+        initTimeLeaderboard();
+        initPointsLeaderboard();
+    </script>
+</body>
+</html>
